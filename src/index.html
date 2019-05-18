@@ -27,8 +27,6 @@
             divContainer.appendChild(table);
 
             }
-        </script>
-        <script>
             /* set up XMLHttpRequest */
             var url = "../bin/spreadsheet1.xlsx";
             var oReq = new XMLHttpRequest();
@@ -87,23 +85,27 @@
             }
             */
         }
+        function eventInputText(){
+             var edValue = document.getElementById("edValue");
+             var s = edValue.value;
+             var lblValue = document.getElementById("lblValue");
+             console.log(this.xlJson);
+             var filteredArr=this.xlJson.filter(function(i) {
+             return i.name.contains(lblValue);
+             });
+               
+            }
+            
+            
+            
             oReq.send();    
         </script>
     </head>
 
     <body>
         <label for="text">Search (by ISP name, price, rating)</label>
-        <input id= "serviceProvider" type="text" onkeypress= "eventInputText()"><br>
-        <span id="xyzValue">The text box contains: </span>
-        <script>
-            function eventInputText(){
-                var serviceProvider = document.getElementById("serviceProvider");
-                var s = serviceProvider.value;
-                var xyzValue = document.getElementById("xyzValue");
-                xyzValue.innerText = "The text box contains: " + s;
-                
-            }
-        </script>
+        <input id= "edValue" type="text" onkeypress= "eventInputText()"><br>
+        <span id="lblValue">The text box contains: </span>
         <p id="table"></p>
         <button type="button">Sort By</button>
         <input type="radio" name="sortby" value="Price"> Price
