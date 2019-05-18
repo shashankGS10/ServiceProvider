@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Title of the document</title>
+        <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+        <script>
+            /* set up XMLHttpRequest */
+            var url = "../bin/spreadsheet1.xlsx";
+            var oReq = new XMLHttpRequest();
+            oReq.open("GET", url, true);
+            oReq.responseType = "arraybuffer";
+
+            oReq.onload = function(e) {
+            var arraybuffer = oReq.response;
+
+            /* convert data to binary string */
+            var data = new Uint8Array(arraybuffer);
+            var arr = new Array();
+            for(var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
+            var bstr = arr.join("");
+
+            /* Call XLSX */
+            var workbook = XLSX.read(bstr, {type:"binary"});
+
+            /* DO SOMETHING WITH workbook HERE */
+            var first_sheet_name = workbook.SheetNames[0];
+            var address_of_cell = 'A1';
+
+            /* Get worksheet */
+            var worksheet = workbook.Sheets[first_sheet_name];
+            console.log(worksheet);
+            let xlJson=[], columnNames=[];
+
+            var keys = Object.keys(worksheet);
+            keys.forEach(element => {
+                
+                if (element.charAt(1)==="1"){
+                    columnNames.push(worksheet[element].v);
+                }
+            
+            });
+            
+            let arrAlpha=['A','B','C','D','E','F','G','H','I'];
+            for(let i=3;i<=9;i++){
+                let rowObj={};
+                for(let j=0;j< arrAlpha.length;j++){
+                    
+                    rowObj[columnNames[j]]=worksheet[arrAlpha[j]+i].v;
+
+                }
+                xlJson.push(rowObj);
+            }
+            console.log(xlJson);
+            /*
+            {
+                cn[0]: worksheet[i,1],
+                cn[1]: worksheet[i,2],
+                cn[2]: worksheet[i,3],
+                
+            }
+            }
+            */
+        }
+            oReq.send();    
+        </script>
+    </head>
+
+    <body>
+        <label for="text">Search (by ISP name, price, rating)</label>
+        <input type="text">
+        <table style='width:50% ; background-color: #bbfbc3;'>
+            <tr>  
+              <td>BSNL</td>
+              <td>110</td>
+            </tr>
+            <tr>
+                <td>Hathway</td>
+                <td>450</td>
+            </tr>
+            <tr>
+                <td>Airtel</td>
+                <td>600</td>
+            </tr> 
+            <tr>
+                <td>BBNL/BTNL</td>
+                <td>220</td>
+            </tr>
+            <tr>
+                <td>Reliance</td>>
+                <td>350</td>
+            </tr>
+            <tr>
+                <td>You</td>
+                <td>500</td>
+            </tr>
+            <tr>
+                <td>Act</td>
+                <td>500</td>
+            </tr>
+            </table>
+            <button type="button">Sort By</button>
+            <input type="radio" name="sortby" value="Price"> Price
+            <input type="radio" name="sortby" value="Rating"> Rating
+    </body>
+
+</html>
+<!-- tr table row, th table header,  -->
