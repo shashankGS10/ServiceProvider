@@ -5,11 +5,12 @@
         <title>Title of the document</title>
         <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
         <script>
+            let xlJson=[], columnNames=[];
             function drawTable(xlJson, columnNames){
                 var table = document.createElement("table");
             var tr = table.insertRow(-1);
             for (var i = 0; i < columnNames.length; i++) {
-                var th = document.createElement("th");      // TABLE HEADER.
+                var th = document.createElement("th");      
                 th.innerHTML = columnNames[i];
                 tr.appendChild(th);
             }
@@ -27,7 +28,7 @@
             divContainer.appendChild(table);
 
             }
-            /* set up XMLHttpRequest */
+           
             var url = "../bin/spreadsheet1.xlsx";
             var oReq = new XMLHttpRequest();
             oReq.open("GET", url, true);
@@ -36,23 +37,23 @@
             oReq.onload = function(e) {
             var arraybuffer = oReq.response;
 
-            /* convert data to binary string */
+            
             var data = new Uint8Array(arraybuffer);
             var arr = new Array();
             for(var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
             var bstr = arr.join("");
 
-            /* Call XLSX */
+            
             var workbook = XLSX.read(bstr, {type:"binary"});
 
-            /* DO SOMETHING WITH workbook HERE */
+            
             var first_sheet_name = workbook.SheetNames[0];
             var address_of_cell = 'A1';
 
-            /* Get worksheet */
+            
             var worksheet = workbook.Sheets[first_sheet_name];
             console.log(worksheet);
-            let xlJson=[], columnNames=[];
+            
 
             var keys = Object.keys(worksheet);
             keys.forEach(element => {
@@ -75,24 +76,17 @@
             }
             console.log(xlJson);
             drawTable(xlJson , columnNames);            
-            /*
-            {
-                cn[0]: worksheet[i,1],
-                cn[1]: worksheet[i,2],
-                cn[2]: worksheet[i,3],
-                
-            }
-            }
-            */
+            
         }
         function eventInputText(){
              var edValue = document.getElementById("edValue");
              var s = edValue.value;
-             var lblValue = document.getElementById("lblValue");
-             console.log(this.xlJson);
-             var filteredArr=this.xlJson.filter(function(i) {
-             return i.name.contains(lblValue);
+             var filteredArr=xlJson.filter(function(i) {// i equal to row
+             return (i.name.includes(s) || i.lowest_price.toString().includes(s) ||i.rating.toString().includes(s)); //includes every possiblilites in name ,lowest_price and rating
              });
+             console.log(filteredArr);
+             drawTable(filteredArr,columnNames);
+             
                
             }
             
@@ -105,7 +99,6 @@
     <body>
         <label for="text">Search (by ISP name, price, rating)</label>
         <input id= "edValue" type="text" onkeypress= "eventInputText()"><br>
-        <span id="lblValue">The text box contains: </span>
         <p id="table"></p>
         <button type="button">Sort By</button>
         <input type="radio" name="sortby" value="Price"> Price
